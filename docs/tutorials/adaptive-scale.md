@@ -178,6 +178,8 @@ Adaptive scale supports these SLA metric families in this release:
 
 Quality goodput and goodput ratio require at least one request-quality filter, such as `request_latency`, `time_to_first_token`, or `inter_token_latency`, so the controller can decide which successful requests count as quality-passing.
 
+`request_error_rate` uses percentage points (`1.0` means 1%) and divides errors by completed requests, excluding cancellations. The adaptive-only `error_rate` alias remains a 0–1 ratio over all window outcomes, including cancellations.
+
 ## YAML-only configuration
 
 Adaptive scale does not expose standalone CLI flags. Put the adaptive settings in the target phase's `adaptive_scale` block, keep SLA filters on the phase-level `sla` block, and run the benchmark with `aiperf profile --config <file>`. General CLI flags such as `--tokenizer`, `--ui`, and `--output-artifact-dir` can still be used around the YAML benchmark definition.

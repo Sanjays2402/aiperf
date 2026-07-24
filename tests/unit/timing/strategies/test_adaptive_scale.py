@@ -1826,7 +1826,7 @@ def test_sla_evaluator_rate_metric_aliases_and_failures() -> None:
     assert evaluator.value(
         SLAFilter(metric_tag="request_error_rate", stat="avg", op="le", threshold=1),
         stats,
-    ) == pytest.approx(0.25)
+    ) == pytest.approx(100 / 3)
     assert evaluator.value(
         SLAFilter(
             metric_tag="request_cancellation_rate", stat="max", op="le", threshold=1

@@ -230,6 +230,16 @@ class AdaptiveScaleSLAEvaluator:
         raise ValueError(f"Unsupported error_rate SLA stat: {stat}")
 
     @staticmethod
+    def request_error_rate_value(stats: WindowStats, stat: str) -> float:
+        match stat:
+            case "avg" | "min" | "max":
+                completed = len(stats.samples) + stats.errors
+                if completed == 0:
+                    return 0.0
+                return 100.0 * stats.errors / completed
+        raise ValueError(f"Unsupported request_error_rate SLA stat: {stat}")
+
+    @staticmethod
     def cancellation_rate_value(stats: WindowStats, stat: str) -> float:
         match stat:
             case "avg" | "min" | "max":
@@ -264,8 +274,10 @@ class AdaptiveScaleSLAEvaluator:
                 return self.goodput_ratio_value(stats, sla.stat, sla_filters or [])
             case metric if metric in SUCCESS_RATE_METRICS:
                 return self.success_rate_value(stats, sla.stat)
-            case "error_rate" | "request_error_rate":
+            case "error_rate":
                 return self.error_rate_value(stats, sla.stat)
+            case "request_error_rate":
+                return self.request_error_rate_value(stats, sla.stat)
             case "cancellation_rate" | "request_cancellation_rate":
                 return self.cancellation_rate_value(stats, sla.stat)
         raise ValueError(f"{SUPPORTED_METRICS_MESSAGE}, got {sla.metric_tag!r}")
